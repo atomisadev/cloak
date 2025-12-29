@@ -14,7 +14,7 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "initialize a new encrypted secret store",
 	Run: func(cmd *cobra.Command, args []string) {
-		if _, err := os.Stat("cloak.encrypted"); err != nil {
+		if _, err := os.Stat("cloak.encrypted"); err == nil {
 			color.Red("Error: 'cloak.encrypted' already exists. Aborting to prevent overwrite.")
 			os.Exit(1)
 		}
