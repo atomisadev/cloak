@@ -4,6 +4,8 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 )
@@ -33,6 +35,37 @@ func Encrypt(plaintext []byte, key []byte) ([]byte, error) {
 	return ciphertext, nil
 }
 
+// decrypts the data using aes-256-gcm
 func Decrypt(data []byte, key []byte) ([]byte, error) {
-	return data, nil
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, fmt.Errorf("crypto: failed to create cipher block: %w", err)
+	}
+
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("crypto: failed to create GCM: %w", err)
+	}
+
+	nonceSize := gcm.NonceSize()
+	if len(data) < nonceSize {
+		return nil, errors.New("crypto: ciphertext too short (invalid format)")
+	}
+
+	nonce, ciphertext := data[:nonceSize], data[nonceSize:]
+
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return nil, errors.New("crypto: destination failed (auth tag mismatch or corrupted data)")
+	}
+
+	return plaintext, nil
+}
+
+func GenerateKey() (string, error) {
+	bytes := make([]byte, 32)
+	if _, err := io.ReadFull(rand.Reader, bytes); err != nil {
+		return "", fmt.Errorf("crypto: failed to generate random key: %w", err)
+	}
+	return hex.EncodeToString(bytes), nil
 }
