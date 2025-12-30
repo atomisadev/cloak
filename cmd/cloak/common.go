@@ -13,8 +13,11 @@ func RequireKey() string {
 		return envKey
 	}
 
-	if key, err := keychain.Get(); err == nil && key != "" {
-		return key
+	wd, err := os.Getwd()
+	if err == nil {
+		if key, err := keychain.Get(wd); err == nil && key != "" {
+			return key
+		}
 	}
 
 	color.Red("✖ Error: Master Key not found.")

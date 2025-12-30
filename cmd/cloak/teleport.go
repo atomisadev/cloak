@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/atomisadev/cloak/pkg/keychain"
 	"github.com/fatih/color"
 	"github.com/psanford/wormhole-william/wormhole"
 	"github.com/spf13/cobra"
@@ -78,7 +79,20 @@ func receiveKey(ctx context.Context, code string) {
 		os.Exit(1)
 	}
 
-	fmt.Print(string(data))
+	masterKey := string(data)
+	wd, _ := os.Getwd()
+
+	if err := keychain.Save(wd, masterKey); err != nil {
+		color.Yellow("⚠ Received key, but could not save to Keychain: %v", err)
+		fmt.Println("Here is the key (copy manually):")
+		fmt.Println(masterKey)
+		return
+	}
+
+	color.Green("✔ Master Key received and saved to Keychain.")
+	color.New(color.FgHiBlack).Printf("  Scope: %s\n", wd)
+	fmt.Println("You can now run 'cloak run' or 'cloak edit'.")
+
 }
 
 func init() {

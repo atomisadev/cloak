@@ -40,7 +40,8 @@ var initCmd = &cobra.Command{
 		keyStyle.Println(masterKey)
 		fmt.Println()
 
-		err = keychain.Save(masterKey)
+		wd, _ := os.Getwd()
+		err = keychain.Save(wd, masterKey)
 		if err == nil {
 			color.Cyan("Master key saved to System Keychain.")
 			color.New(color.FgHiBlack).Println("(You don't need to set env vars manually)")

@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"runtime"
 	"syscall"
 )
 
@@ -27,6 +28,13 @@ func RunCommand(command []string, secrets map[string]string) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	// makes sure that child dies if parent dies (only linux)
+	if runtime.GOOS == "linux" {
+		cmd.SysProcAttr = &syscall.SysProcAttr{
+			Pdeathsig: syscall.SIGKILL,
+		}
+	}
 
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("injector: failed to start command '%s': %w", binary, err)
