@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var version = "dev"
+
 var rootCmd = &cobra.Command{
 	Use:   "cloak",
 	Short: "Secure environment injector",
@@ -17,6 +19,14 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		printWelcome()
 		cmd.Help()
+	},
+}
+
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Print the version number of cloak",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("cloak version %s\n", version)
 	},
 }
 
@@ -38,5 +48,5 @@ func printWelcome() {
 }
 
 func init() {
-
+	rootCmd.AddCommand(versionCmd)
 }
