@@ -96,7 +96,6 @@ func loadStore() (map[string]string, string, error) {
 
 	var store map[string]string
 	if err := json.Unmarshal(data, &store); err != nil {
-		// If corrupted, return empty to avoid locking user out
 		return make(map[string]string), path, nil
 	}
 	return store, path, nil

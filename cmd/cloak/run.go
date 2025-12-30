@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -32,6 +33,13 @@ var runCmd = &cobra.Command{
 			if exitErr, ok := err.(*exec.ExitError); ok {
 				os.Exit(exitErr.ExitCode())
 			}
+
+			if strings.Contains(args[0], " ") && strings.Contains(err.Error(), "executable file not found") {
+				color.Yellow("💡 Hint: It looks like you passed the command as a single quoted string.")
+				color.Yellow("       Try removing the quotes: cloak run -- %s", args[0])
+				fmt.Println()
+			}
+
 			color.Red("Command execution failed: %v", err)
 			os.Exit(1)
 		}
