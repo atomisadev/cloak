@@ -16,11 +16,7 @@ var setCmd = &cobra.Command{
 		key := args[0]
 		value := args[1]
 
-		masterKey := os.Getenv("CLOAK_MASTER_KEY")
-		if masterKey == "" {
-			color.Red("Error: CLOAK_MASTER_KEY environment variable is not set.")
-			os.Exit(1)
-		}
+		masterKey := RequireKey()
 
 		secrets, err := store.Load("cloak.encrypted", masterKey)
 		if err != nil {

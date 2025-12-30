@@ -17,11 +17,7 @@ var runCmd = &cobra.Command{
 	Long:  `Decrypts the secret store and injects environment variables into the specified command`,
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		masterKey := os.Getenv("CLOAK_MASTER_KEY")
-		if masterKey == "" {
-			color.Red("Error: CLOAK_MASTER_KEY is not set.")
-			os.Exit(1)
-		}
+		masterKey := RequireKey()
 
 		secrets, err := store.Load("cloak.encrypted", masterKey)
 		if err != nil {

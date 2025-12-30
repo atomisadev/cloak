@@ -35,11 +35,7 @@ RECEIVER (With code):
 }
 
 func sendKey(ctx context.Context) {
-	masterKey := os.Getenv("CLOAK_MASTER_KEY")
-	if masterKey == "" {
-		color.Red("Error: CLOAK_MASTER_KEY is not set. Nothing to teleport.")
-		os.Exit(1)
-	}
+	masterKey := RequireKey()
 
 	var c wormhole.Client
 
