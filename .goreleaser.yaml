@@ -59,5 +59,4 @@ brews:
       homepage: "https://github.com/atomisadev/cloak"
       description: "The Avant-Garde CLI tool."
       license: "MIT"
-
       url_template: "https://github.com/atomisadev/cloak/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
